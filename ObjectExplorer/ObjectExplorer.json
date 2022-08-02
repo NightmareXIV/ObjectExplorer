@@ -1,0 +1,11 @@
+﻿{
+  "Author": "Eternita",
+  "Name": "ObjectExplorer",
+  "InternalName": "ObjectExplorer",
+  "AssemblyVersion": "9.0.0.0",
+  "Description": "A convenient way to explore current objects around you.",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 6,
+  "LoadPriority": 0,
+  "IconUrl": ""
+}
