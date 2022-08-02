@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectExplorer
-{
-    internal class Global
-    {
-    }
-}
+﻿global using System.Runtime.InteropServices;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using Dalamud.Plugin;
+global using ImGuiNET;
+global using ECommons.DalamudServices;
+global using Dalamud.Interface;
+global using Dalamud.Interface.Colors;
+global using Dalamud.Interface.Windowing;
+global using Dalamud.Logging;
+global using ECommons;
+global using static ECommons.GenericHelpers;
+global using System.Numerics;
+global using ECommons.ImGuiMethods;
+global using static ObjectExplorer.ObjectExplorer;
