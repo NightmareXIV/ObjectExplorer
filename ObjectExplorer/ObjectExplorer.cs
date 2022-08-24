@@ -23,11 +23,14 @@ namespace ObjectExplorer
                 gui = new();
                 ws.AddWindow(gui);
                 Svc.PluginInterface.UiBuilder.Draw += ws.Draw;
+                Svc.Commands.AddHandler("/oe", new(delegate { gui.IsOpen = true; }));
+                Svc.PluginInterface.UiBuilder.OpenConfigUi += delegate { gui.IsOpen = true; };
             });
         }
 
         public void Dispose()
         {
+            Svc.Commands.RemoveHandler("/oe");
             Svc.PluginInterface.UiBuilder.Draw -= ws.Draw;
             ECommons.ECommons.Dispose();
             P = null;
