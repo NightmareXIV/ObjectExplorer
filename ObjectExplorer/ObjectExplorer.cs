@@ -16,7 +16,7 @@ namespace ObjectExplorer
         public ObjectExplorer(DalamudPluginInterface pi)
         {
             P = this;
-            ECommons.ECommons.Init(pi, Module.ObjectFunctions);
+            ECommonsMain.Init(pi, this, Module.ObjectFunctions);
             new TickScheduler(delegate
             {
                 ws = new();
@@ -32,7 +32,7 @@ namespace ObjectExplorer
         {
             Svc.Commands.RemoveHandler("/oe");
             Svc.PluginInterface.UiBuilder.Draw -= ws.Draw;
-            ECommons.ECommons.Dispose();
+            ECommonsMain.Dispose();
             P = null;
         }
     }

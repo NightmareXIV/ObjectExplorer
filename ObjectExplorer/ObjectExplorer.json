@@ -1,11 +1,11 @@
 ﻿{
-  "Author": "Eternita",
+  "Author": "NightmareXIV",
   "Name": "ObjectExplorer",
   "InternalName": "ObjectExplorer",
   "AssemblyVersion": "9.0.0.0",
-  "Description": "[beta] A convenient way to explore current objects around you.",
+  "Description": "A convenient way to explore current objects around you. Currently supports players only.",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 7,
+  "DalamudApiLevel": 8,
   "LoadPriority": 0,
   "IconUrl": ""
 }
