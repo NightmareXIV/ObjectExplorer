@@ -1,11 +1,10 @@
 ﻿{
-  "Author": "NightmareXIV",
-  "Name": "ObjectExplorer",
-  "InternalName": "ObjectExplorer",
-  "AssemblyVersion": "9.0.0.0",
-  "Description": "A convenient way to explore current objects around you. Currently supports players only.",
-  "ApplicableVersion": "any",
-  "DalamudApiLevel": 8,
-  "LoadPriority": 0,
-  "IconUrl": ""
+    "Author": "NightmareXIV",
+    "Name": "ObjectExplorer",
+    "InternalName": "ObjectExplorer",
+    "Description": "A convenient way to explore current objects around you. Currently supports players only.",
+    "Punchline": "A convenient way to explore current objects around you.",
+    "ApplicableVersion": "any",
+    "LoadPriority": 0,
+    "IconUrl": ""
 }
