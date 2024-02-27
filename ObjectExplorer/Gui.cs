@@ -1,4 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using System;
@@ -41,22 +41,27 @@ namespace ObjectExplorer
                 {
                     players = players.OrderBy(x => Vector3.Distance(x.Position, Svc.ClientState.LocalPlayer.Position)).ToArray();
                 }
+                else if (playersSort == 4)
+                {
+                    players = players.OrderBy(x => x.CompanyTag.ToString()).ToArray();
+                }
                 ImGui.Text($"Total players: {players.Length}");
                 ImGui.SameLine();
                 ImGui.Text("Sort: ");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f.Scale());
-                ImGui.Combo("##pSort", ref playersSort, new string[] { "No sort", "Name", "Home world", "Distance" }, 4);
+                ImGui.Combo("##pSort", ref playersSort, new string[] { "No sort", "Name", "Home world", "Distance", "FC" }, 5);
                 ImGui.SameLine();
                 ImGui.Text("Search: ");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                 ImGui.InputText("##searchPlayer", ref playersFilter, 100);
                 ImGui.BeginChild("##playerschild");
-                ImGui.BeginTable("##logObjects", 3, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+                ImGui.BeginTable("##logObjects", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
                 ImGui.TableSetupColumn("Player name", ImGuiTableColumnFlags.WidthStretch);
                 ImGui.TableSetupColumn("Home world");
                 ImGui.TableSetupColumn("Distance");
+                ImGui.TableSetupColumn("FC");
                 ImGui.TableHeadersRow();
                 var i = 0;
                 foreach (var p in players)
@@ -64,11 +69,17 @@ namespace ObjectExplorer
                     if (string.IsNullOrEmpty(playersFilter)
                         || p.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
                         || p.HomeWorld.GameData.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
+                        || p.CompanyTag.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
                         )
                     {
                         i++;
                         ImGui.TableNextRow();
                         ImGui.TableNextColumn();
+                        var friend = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)p.Address)->IsFriend;
+                        if (friend)
+                        {
+                            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+                        }
                         if (ImGui.Selectable($"{p.Name}##{i}"))
                         {
                             if (((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)p.Address)->GetIsTargetable())
@@ -79,6 +90,10 @@ namespace ObjectExplorer
                             {
                                 Svc.Toasts.ShowError($"{p.Name} can not be targeted.");
                             }
+                        }
+                        if (friend)
+                        {
+                            ImGui.PopStyleColor();
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
@@ -91,6 +106,8 @@ namespace ObjectExplorer
                         ImGui.Text($"{p.HomeWorld.GameData.Name}");
                         ImGui.TableNextColumn();
                         ImGui.Text($"{Vector3.Distance(Svc.ClientState.LocalPlayer.Position, p.Position):F1}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{p.CompanyTag}");
                     }
                 }
                 ImGui.EndTable();
