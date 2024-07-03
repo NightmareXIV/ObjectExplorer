@@ -13,7 +13,7 @@ namespace ObjectExplorer
         internal Gui gui;
         internal static ObjectExplorer P;
 
-        public ObjectExplorer(DalamudPluginInterface pi)
+        public ObjectExplorer(IDalamudPluginInterface pi)
         {
             P = this;
             ECommonsMain.Init(pi, this, Module.ObjectFunctions);
