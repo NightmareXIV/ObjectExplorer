@@ -5,6 +5,7 @@
     "Description": "A convenient way to explore current objects around you. Currently supports players only.",
     "Punchline": "A convenient way to explore current objects around you.",
     "ApplicableVersion": "any",
+    "DalamudApiVersion": 10,
     "LoadPriority": 0,
     "IconUrl": ""
 }

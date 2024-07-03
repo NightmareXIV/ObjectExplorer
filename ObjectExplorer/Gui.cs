@@ -28,7 +28,7 @@ namespace ObjectExplorer
         {
             if (Svc.ClientState.LocalPlayer != null)
             {
-                PlayerCharacter[] players = Svc.Objects.Where(x => x is PlayerCharacter && x.Address != Svc.ClientState.LocalPlayer.Address).Select(x => (PlayerCharacter)x).ToArray();
+                IPlayerCharacter[] players = Svc.Objects.Where(x => x is IPlayerCharacter && x.Address != Svc.ClientState.LocalPlayer.Address).Select(x => (IPlayerCharacter)x).ToArray();
                 if (playersSort == 1)
                 {
                     players = players.OrderBy(x => x.Name.ToString()).ToArray();
