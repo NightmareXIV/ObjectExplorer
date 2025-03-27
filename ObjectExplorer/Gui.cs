@@ -35,7 +35,7 @@ namespace ObjectExplorer
                 }
                 else if (playersSort == 2)
                 {
-                    players = players.OrderBy(x => x.HomeWorld.GameData.Name.ToString()).ToArray();
+                    players = players.OrderBy(x => x.HomeWorld.Value.Name.ToString()).ToArray();
                 }
                 else if (playersSort == 3)
                 {
@@ -68,7 +68,7 @@ namespace ObjectExplorer
                 {
                     if (string.IsNullOrEmpty(playersFilter)
                         || p.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
-                        || p.HomeWorld.GameData.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
+                        || p.HomeWorld.Value.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
                         || p.CompanyTag.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
                         )
                     {
@@ -103,7 +103,7 @@ namespace ObjectExplorer
                             }
                         }
                         ImGui.TableNextColumn();
-                        ImGui.Text($"{p.HomeWorld.GameData.Name}");
+                        ImGui.Text($"{p.HomeWorld.Value.Name}");
                         ImGui.TableNextColumn();
                         ImGui.Text($"{Vector3.Distance(Svc.ClientState.LocalPlayer.Position, p.Position):F1}");
                         ImGui.TableNextColumn();
