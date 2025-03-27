@@ -23,9 +23,14 @@ namespace ObjectExplorer
                 gui = new();
                 ws.AddWindow(gui);
                 Svc.PluginInterface.UiBuilder.Draw += ws.Draw;
-                Svc.Commands.AddHandler("/oe", new(delegate { gui.IsOpen = true; }));
-                Svc.PluginInterface.UiBuilder.OpenConfigUi += delegate { gui.IsOpen = true; };
+                Svc.Commands.AddHandler("/oe", new(delegate { ToggleWindow(); }));
+                Svc.PluginInterface.UiBuilder.OpenConfigUi += delegate { ToggleWindow(); };
             });
+        }
+
+        public void ToggleWindow()
+        {
+            gui.IsOpen = !gui.IsOpen;
         }
 
         public void Dispose()
