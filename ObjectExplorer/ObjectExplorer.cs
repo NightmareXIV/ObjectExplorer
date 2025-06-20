@@ -1,6 +1,7 @@
 ﻿using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ECommons;
+using ECommons.Configuration;
 using ECommons.Schedulers;
 using System;
 
@@ -12,6 +13,7 @@ namespace ObjectExplorer
         internal WindowSystem ws;
         internal Gui gui;
         internal static ObjectExplorer P;
+        public Config Config;
 
         public ObjectExplorer(IDalamudPluginInterface pi)
         {
@@ -19,6 +21,7 @@ namespace ObjectExplorer
             ECommonsMain.Init(pi, this, Module.ObjectFunctions);
             new TickScheduler(delegate
             {
+                Config = EzConfig.Init<Config>();
                 ws = new();
                 gui = new();
                 ws.AddWindow(gui);

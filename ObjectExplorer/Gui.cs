@@ -22,10 +22,22 @@ namespace ObjectExplorer
                 MinimumSize = new(300, 300),
                 MaximumSize = new(float.MaxValue, float.MaxValue)
             };
+            this.TitleBarButtons.Add(new()
+            {
+                Icon = FontAwesomeIcon.Cog,
+                ShowTooltip = () => ImGui.SetTooltip("Configuration"),
+                Click = x => ImGui.OpenPopup("Configuration"),
+                IconOffset = new(2,1)
+            });
         }
 
         public override void Draw()
         {
+            if(ImGui.BeginPopup("Configuration"))
+            {
+                ImGui.Checkbox("Enable targeting on click", ref P.Config.EnableTargeting);
+                ImGui.EndPopup();
+            }
             if (Svc.ClientState.LocalPlayer != null)
             {
                 IPlayerCharacter[] players = Svc.Objects.Where(x => x is IPlayerCharacter && x.Address != Svc.ClientState.LocalPlayer.Address).Select(x => (IPlayerCharacter)x).ToArray();
@@ -56,61 +68,68 @@ namespace ObjectExplorer
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                 ImGui.InputText("##searchPlayer", ref playersFilter, 100);
-                ImGui.BeginChild("##playerschild");
-                ImGui.BeginTable("##logObjects", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
-                ImGui.TableSetupColumn("Player name", ImGuiTableColumnFlags.WidthStretch);
-                ImGui.TableSetupColumn("Home world");
-                ImGui.TableSetupColumn("Distance");
-                ImGui.TableSetupColumn("FC");
-                ImGui.TableHeadersRow();
-                var i = 0;
-                foreach (var p in players)
+                if(ImGui.BeginChild("##playerschild"))
                 {
-                    if (string.IsNullOrEmpty(playersFilter)
-                        || p.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
-                        || p.HomeWorld.Value.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
-                        || p.CompanyTag.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
-                        )
+                    if(ImGui.BeginTable("##logObjects", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit))
                     {
-                        i++;
-                        ImGui.TableNextRow();
-                        ImGui.TableNextColumn();
-                        var friend = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)p.Address)->IsFriend;
-                        if (friend)
+                        ImGui.TableSetupColumn("Player name", ImGuiTableColumnFlags.WidthStretch);
+                        ImGui.TableSetupColumn("Home world");
+                        ImGui.TableSetupColumn("Distance");
+                        ImGui.TableSetupColumn("FC");
+                        ImGui.TableHeadersRow();
+                        var i = 0;
+                        foreach(var p in players)
                         {
-                            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
-                        }
-                        if (ImGui.Selectable($"{p.Name}##{i}"))
-                        {
-                            if (((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)p.Address)->GetIsTargetable())
+                            if(string.IsNullOrEmpty(playersFilter)
+                                || p.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
+                                || p.HomeWorld.Value.Name.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
+                                || p.CompanyTag.ToString().Contains(playersFilter, StringComparison.OrdinalIgnoreCase)
+                                )
                             {
-                                Svc.Targets.SetTarget(p);
-                            }
-                            else
-                            {
-                                Svc.Toasts.ShowError($"{p.Name} can not be targeted.");
+                                i++;
+                                ImGui.TableNextRow();
+                                ImGui.TableNextColumn();
+                                var friend = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)p.Address)->IsFriend;
+                                if(friend)
+                                {
+                                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+                                }
+                                if(ImGui.Selectable($"{p.Name}##{i}"))
+                                {
+                                    if(P.Config.EnableTargeting)
+                                    {
+                                        if(p.IsTargetable)
+                                        {
+                                            Svc.Targets.SetTarget(p);
+                                        }
+                                        else
+                                        {
+                                            Svc.Toasts.ShowError($"{p.Name} can not be targeted.");
+                                        }
+                                    }
+                                }
+                                if(friend)
+                                {
+                                    ImGui.PopStyleColor();
+                                }
+                                if(ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                                {
+                                    if(!Svc.Commands.ProcessCommand($"/sf !!{p.Name}"))
+                                    {
+                                        Svc.Toasts.ShowError("Splatoon plugin must be installed");
+                                    }
+                                }
+                                ImGui.TableNextColumn();
+                                ImGui.Text($"{p.HomeWorld.Value.Name}");
+                                ImGui.TableNextColumn();
+                                ImGui.Text($"{Vector3.Distance(Svc.ClientState.LocalPlayer.Position, p.Position):F1}");
+                                ImGui.TableNextColumn();
+                                ImGui.Text($"{p.CompanyTag}");
                             }
                         }
-                        if (friend)
-                        {
-                            ImGui.PopStyleColor();
-                        }
-                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                        {
-                            if (!Svc.Commands.ProcessCommand($"/sf !!{p.Name}"))
-                            {
-                                Svc.Toasts.ShowError("Splatoon plugin must be installed");
-                            }
-                        }
-                        ImGui.TableNextColumn();
-                        ImGui.Text($"{p.HomeWorld.Value.Name}");
-                        ImGui.TableNextColumn();
-                        ImGui.Text($"{Vector3.Distance(Svc.ClientState.LocalPlayer.Position, p.Position):F1}");
-                        ImGui.TableNextColumn();
-                        ImGui.Text($"{p.CompanyTag}");
+                        ImGui.EndTable();
                     }
                 }
-                ImGui.EndTable();
                 ImGui.EndChild();
             }
             else
