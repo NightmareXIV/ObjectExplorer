@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommons.DalamudServices.Legacy;
+using Dalamud.Interface.Components;
 
 namespace ObjectExplorer
 {
@@ -13,6 +14,7 @@ namespace ObjectExplorer
     {
         int playersSort = 0;
         string playersFilter = string.Empty;
+        bool splatoonTargeting;
 
         public Gui() : base(P.Name)
         {
@@ -57,6 +59,25 @@ namespace ObjectExplorer
                     players = players.OrderBy(x => x.CompanyTag.ToString()).ToArray();
                 }
                 ImGui.Text($"Total players: {players.Length}");
+                ImGui.SameLine();
+                if(ImGuiComponents.IconButton(
+                    FontAwesomeIcon.StopCircle, 
+                    splatoonTargeting ? ImGuiColors.DalamudOrange : default)
+                    )
+                {
+                    if(!Svc.Commands.ProcessCommand("/sf"))
+                    {
+                        Svc.Toasts.ShowError("Splatoon plugin must be installed");
+                    }
+                    else
+                    {
+                        splatoonTargeting = false;
+                    }
+                }
+                if(ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("Clear Splatoon targeting");
+                }
                 ImGui.SameLine();
                 ImGui.Text("Sort: ");
                 ImGui.SameLine();
@@ -116,6 +137,10 @@ namespace ObjectExplorer
                                     if(!Svc.Commands.ProcessCommand($"/sf !!{p.Name}"))
                                     {
                                         Svc.Toasts.ShowError("Splatoon plugin must be installed");
+                                    }
+                                    else
+                                    {
+                                        splatoonTargeting = true;
                                     }
                                 }
                                 ImGui.TableNextColumn();
